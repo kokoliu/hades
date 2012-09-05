@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <memcached keyPrefix="URL-">
+    <servers>
+      <add address="192.168.100.19" port="12001" />
+    </servers>
+    <socketPool initConn="10" minConn="10" maxConn="30" aliveCheck="true" readTimeOut="1000" failover="true" maintSleep="30" nagle="false" />
+  </memcached>
+</configuration>
