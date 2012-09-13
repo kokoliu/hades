@@ -115,7 +115,12 @@ public class CacheContext {
 			return null;
 		}
 		
-		Object cacheObject = PageCacheMemCacheTool.getCache().get(key);
+		Object cacheObject = null;
+		try {
+			cacheObject = PageCacheMemCacheTool.getCache().get(key);
+		} catch (Exception e) {
+			log.error("getCacheResult ERROR", e);
+		}
 		
 		if (cacheObject == null)  return null;
 
@@ -156,7 +161,12 @@ public class CacheContext {
 			
 			Date expired =new Date((new Date().getTime() +expiredTime * 1000L));
 
-			 PageCacheMemCacheTool.getCache().set(this.getCacheKey(),  responseWrapper.getContent(), expired);
+			 try {
+				PageCacheMemCacheTool.getCache().set(this.getCacheKey(),  responseWrapper.getContent(), getExpiry(expired));
+			} catch (Exception e) {
+				
+				log.error("setCacheResult ERROR", e);
+			}
 			 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -226,5 +236,7 @@ public class CacheContext {
         // Only cache if the response was 200
         return cacheResponse.getStatus() == HttpServletResponse.SC_OK;
     }
-	
+	private int getExpiry(Date time) {
+		return (int)((time.getTime() - new Date().getTime()) / 1000);
+	}	
 }

@@ -20,8 +20,10 @@
  */
 package com.bj58.spat.hades.server;
 import java.io.File;
+import java.io.IOException;
 
-import com.bj58.sfft.caching.Memcache;
+import com.bj58.spat.ares.MemcachedClient;
+import com.bj58.spat.ares.exception.ConfigException;
 import com.bj58.spat.hades.HADES;
 
 
@@ -32,13 +34,13 @@ import com.bj58.spat.hades.HADES;
  */
 public class SessionCacheMemCacheTool {
 
-	private static Memcache mc = null;
+	private static MemcachedClient mc = null;
 	
 	/**
 	 * 获得Cache对象
 	 * @return
 	 */
-	public static Memcache getCache() {
+	public static MemcachedClient getCache() {
 		
 		if (mc  != null) return mc;
 		
@@ -50,7 +52,15 @@ public class SessionCacheMemCacheTool {
 		
 		synchronized (SessionCacheMemCacheTool.class){
 			if (mc  != null) return mc;
-			mc = Memcache.GetMemcache(path);
+			try {
+				mc = MemcachedClient.getInstrance(path);
+			} catch (ConfigException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return mc;
 		}
 	}
